@@ -251,7 +251,7 @@ local function init_player_armor(initplayer)
 	for group, _ in pairs(armor.registered_groups) do
 		armor.def[name].groups[group] = 0
 	end
-	local skin = armor:get_player_skin(name)
+	local skin = armor:get_player_skin(initplayer, name)
 	armor.textures[name] = {
 		skin = skin,
 		armor = "3d_armor_trans.png",
@@ -302,7 +302,7 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 			minetest.after(0, function()
         local pplayer = minetest.get_player_by_name(player_name)
         if player then
-          local skin = armor:get_player_skin(name)
+          local skin = armor:get_player_skin(player, name)
           armor.textures[name].skin = skin
           armor:set_player_armor(pplayer)
         end
@@ -312,8 +312,11 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 end)
 
 minetest.register_on_joinplayer(function(player)
-	default.player_set_model(player, "3d_armor_character.b3d")
-  local player_name = player:get_player_name()
+	local meta = player:get_meta()
+	if not(meta:get_string("gender") == "female") then
+		default.player_set_model(player, "3d_armor_character.b3d")
+	end
+	local player_name = player:get_player_name()
 
 	minetest.after(0, function()
     local pplayer = minetest.get_player_by_name(player_name)

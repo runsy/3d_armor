@@ -183,7 +183,7 @@ armor.set_player_armor = function(self, player)
 	local state = 0
 	local count = 0
 	local material = {count=1}
-	local preview = armor:get_preview(name)
+	local preview = armor:get_preview(player, name)
 	local texture = "3d_armor_trans.png"
 	local physics = {}
 	local attributes = {}
@@ -405,13 +405,16 @@ armor.damage = function(self, player, index, stack, use)
 	end
 end
 
-armor.get_player_skin = function(self, name)
+armor.get_player_skin = function(self, player, name)
+	local meta = player:get_meta()
 	if (self.skin_mod == "skins" or self.skin_mod == "simple_skins") and skins.skins[name] then
 		return skins.skins[name]..".png"
 	elseif self.skin_mod == "u_skins" and u_skins.u_skins[name] then
 		return u_skins.u_skins[name]..".png"
 	elseif self.skin_mod == "wardrobe" and wardrobe.playerSkins and wardrobe.playerSkins[name] then
 		return wardrobe.playerSkins[name]
+	elseif player:get_meta():get_string("gender") == "female" then
+		return "female.png"
 	end
 	return armor.default_skin..".png"
 end
