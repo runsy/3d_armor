@@ -312,9 +312,8 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 end)
 
 minetest.register_on_joinplayer(function(player)
-	local meta = player:get_meta()
-	if not(meta:get_string("gender") == "female") then
-		default.player_set_model(player, "3d_armor_character.b3d")
+	if not(player_api.get_gender(player) == "female") then
+		player_api.set_model(player, "3d_armor_character.b3d")
 	end
 	local player_name = player:get_player_name()
 
