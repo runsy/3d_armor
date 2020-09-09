@@ -5,21 +5,16 @@ local last_punch_time = {}
 local pending_players = {}
 local timer = 0
 
--- support for i18n
-armor_i18n = { }
-armor_i18n.gettext, armor_i18n.ngettext = dofile(modpath.."/intllib.lua")
+dofile(modpath.."/api.lua")
 
 -- local functions
-local S = armor_i18n.gettext
 local F = minetest.formspec_escape
-
-dofile(modpath.."/api.lua")
+local S = armor.get_translator
 
 -- integration test
 if minetest.settings:get_bool("enable_3d_armor_integration_test") then
-        dofile(modpath.."/integration_test.lua")
+	dofile(modpath.."/integration_test.lua")
 end
-
 
 -- Legacy Config Support
 
