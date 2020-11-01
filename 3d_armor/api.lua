@@ -5,6 +5,7 @@ local skin_previews = {}
 local use_player_monoids = minetest.global_exists("player_monoids")
 local use_armor_monoid = minetest.global_exists("armor_monoid")
 local use_pova_mod = minetest.get_modpath("pova")
+local use_playerphysics = minetest.global_exists("playerphysics")
 local armor_def = setmetatable({}, {
 	__index = function()
 		return setmetatable({
@@ -197,7 +198,7 @@ armor.set_player_armor = function(self, player)
 	local state = 0
 	local count = 0
 	local material = {count=1}
-	local preview = armor:get_preview(player, name)
+	local preview = armor:get_preview(name)
 	local texture = "3d_armor_trans.png"
 	local physics = {}
 	local attributes = {}
@@ -299,7 +300,14 @@ armor.set_player_armor = function(self, player)
 		end
 		player:set_armor_groups(groups)
 	end
-	if use_player_monoids then
+	if use_playerphysics then
+		playerphysics.remove_physics_factor(player, "speed", "3d_armor:physics")
+		playerphysics.remove_physics_factor(player, "jump", "3d_armor:physics")
+		playerphysics.remove_physics_factor(player, "gravity", "3d_armor:physics")
+		playerphysics.add_physics_factor(player, "speed", "3d_armor:physics", physics.speed)
+		playerphysics.add_physics_factor(player, "jump", "3d_armor:physics", physics.jump)
+		playerphysics.add_physics_factor(player, "gravity", "3d_armor:physics", physics.gravity)
+	elseif use_player_monoids then
 		player_monoids.speed:add_change(player, physics.speed,
 			"3d_armor:physics")
 		player_monoids.jump:add_change(player, physics.jump,
@@ -422,13 +430,6 @@ armor.damage = function(self, player, index, stack, use)
 	end
 end
 
-<<<<<<< HEAD
-armor.get_player_skin = function(self, player, name)
-	local meta = player:get_meta()
-	if player:get_meta():get_string("gender") == "female" then
-		return "female.png"
-	end
-=======
 armor.get_weared_armor_elements = function(self, player)
     local name, inv = self:get_valid_player(player, "[get_weared_armor]")
 	local weared_armor = {}
@@ -490,7 +491,8 @@ armor.remove_all = function(self, player)
 end
 
 armor.get_player_skin = function(self, name)
->>>>>>> upstream/master
+	local player = minetest.get_player_by_name(name)
+	local meta = player:get_meta()
 	if (self.skin_mod == "skins" or self.skin_mod == "simple_skins") and skins.skins[name] then
 		return skins.skins[name]..".png"
 	elseif self.skin_mod == "u_skins" and u_skins.u_skins[name] then
@@ -498,7 +500,11 @@ armor.get_player_skin = function(self, name)
 	elseif self.skin_mod == "wardrobe" and wardrobe.playerSkins and wardrobe.playerSkins[name] then
 		return wardrobe.playerSkins[name]
 	end
-	return armor.default_skin..".png"
+	if player:get_meta():get_string("gender") == "female" then
+		return "female.png"
+	else
+		return "character.png"
+	end
 end
 
 armor.update_skin = function(self, name)
