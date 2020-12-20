@@ -303,6 +303,10 @@ default.player_register_model("3d_armor_character.b3d", {
 		mine = {x=189, y=198},
 		walk_mine = {x=200, y=219},
 		sit = {x=81, y=160},
+		swin = {x = 221, y = 269},
+		swin_mine = {x = 270, y = 290},
+		swin_and_mine = {x = 291, y = 314},
+		swin_stand = {x = 221, y = 221},
 	},
 })
 
@@ -320,6 +324,10 @@ default.player_register_model("3d_armor_female.b3d", {
 		mine = {x=189, y=198},
 		walk_mine = {x=200, y=219},
 		sit = {x=81, y=160},
+		swin = {x = 221, y = 269},
+		swin_mine = {x = 270, y = 290},
+		swin_and_mine = {x = 291, y = 314},
+		swin_stand = {x = 221, y = 221},
 	},
 })
 
