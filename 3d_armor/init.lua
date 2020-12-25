@@ -413,13 +413,20 @@ if armor.config.drop == true or armor.config.destroy == true then
 			end)
 		end
 	end)
+else -- reset un-dropped armor and it's effects
+	minetest.register_on_respawnplayer(function(player)
+		armor:set_player_armor(player)
+	end)
 end
 
 if armor.config.punch_damage == true then
 	minetest.register_on_punchplayer(function(player, hitter,
 			time_from_last_punch, tool_capabilities)
 		local name = player:get_player_name()
-		if name then
+		local hit_ip = hitter:is_player()
+		if name and hit_ip and minetest.is_protected(player:get_pos(), "") then
+			return
+		elseif name then
 			armor:punch(player, hitter, time_from_last_punch, tool_capabilities)
 			last_punch_time[name] = minetest.get_gametime()
 		end
