@@ -95,6 +95,8 @@ armor.config = {
 	material_gold = true,
 	material_mithril = true,
 	material_crystal = true,
+	set_elements = "head torso legs feet shield",
+	set_multiplier = 1.1,
 	water_protect = true,
 	fire_protect = minetest.get_modpath("ethereal") ~= nil,
 	fire_protect_torch = minetest.get_modpath("ethereal") ~= nil,
@@ -116,6 +118,14 @@ armor.register_armor = function(self, name, def)
 			end
 		end
 		return armor:equip(player, itemstack)
+	end
+	-- The below is a very basic check to try and see if a material name exists as part
+	-- of the item name. However this check is very simple and just checks theres "_something"
+	-- at the end of the item name and logging an error to debug if not.
+	local check_mat_exists = string.match(name, "%:.+_(.+)$")
+	if check_mat_exists == nil then
+		minetest.log("warning:[3d_armor] Registered armor "..name..
+		" does not have \"_material\" specified at the end of the item registration name")
 	end
 	minetest.register_tool(name, def)
 end
@@ -197,7 +207,6 @@ armor.set_player_armor = function(self, player)
 	end
 	local state = 0
 	local count = 0
-	local material = {count=1}
 	local preview = armor:get_preview(name)
 	local texture = "3d_armor_trans.png"
 	local physics = {}
@@ -205,6 +214,9 @@ armor.set_player_armor = function(self, player)
 	local levels = {}
 	local groups = {}
 	local change = {}
+	local set_worn = {}
+	local armor_multi = 0
+	local worn_armor = armor:get_weared_armor_elements(player)
 	for _, phys in pairs(self.physics) do
 		physics[phys] = 1
 	end
@@ -258,21 +270,38 @@ armor.set_player_armor = function(self, player)
 				local value = def.groups["armor_"..attr] or 0
 				attributes[attr] = attributes[attr] + value
 			end
-			local mat = string.match(item, "%:.+_(.+)$")
-			if material.name then
-				if material.name == mat then
-					material.count = material.count + 1
+		end
+	end
+	-- The following code compares player worn armor items against requirements
+	-- of which armor pieces are needed to be worn to meet set bonus requirements
+	for loc,item in pairs(worn_armor) do
+		local item_mat = string.match(item, "%:.+_(.+)$")
+		local worn_key = item_mat or "unknown"
+
+		-- Perform location checks to ensure the armor is worn correctly
+		for k,set_loc in pairs(armor.config.set_elements)do
+			if set_loc == loc then
+				if set_worn[worn_key] == nil then
+					set_worn[worn_key] = 0
+					set_worn[worn_key] = set_worn[worn_key] + 1
+				else
+					set_worn[worn_key] = set_worn[worn_key] + 1
 				end
-			else
-				material.name = mat
 			end
+		end
+	end
+
+	-- Apply the armor multiplier only if the player is wearing a full set of armor
+	for mat_name,arm_piece_num in pairs(set_worn) do
+		if arm_piece_num == #armor.config.set_elements then
+			armor_multi = armor.config.set_multiplier
 		end
 	end
 	for group, level in pairs(levels) do
 		if level > 0 then
 			level = level * armor.config.level_multiplier
-			if material.name and material.count == #self.elements then
-				level = level * 1.1
+			if armor_multi ~= 0 then
+				level = level * armor.config.set_multiplier
 			end
 		end
 		local base = self.registered_groups[group]

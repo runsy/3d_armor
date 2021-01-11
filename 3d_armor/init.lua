@@ -48,6 +48,8 @@ for name, config in pairs(armor.config) do
 	local setting = minetest.settings:get("armor_"..name)
 	if type(config) == "number" then
 		setting = tonumber(setting)
+	elseif type(config) == "string" then
+		setting = tostring(setting)
 	elseif type(config) == "boolean" then
 		setting = minetest.settings:get_bool("armor_"..name)
 	end
@@ -61,6 +63,10 @@ for material, _ in pairs(armor.materials) do
 		armor.materials[material] = nil
 	end
 end
+
+-- Convert set_elements to a Lua table splitting on blank spaces
+local t_set_elements = armor.config.set_elements
+armor.config.set_elements = string.split(t_set_elements, " ")
 
 -- Remove torch damage if fire_protect_torch == false
 if armor.config.fire_protect_torch == false and armor.config.fire_protect == true then
