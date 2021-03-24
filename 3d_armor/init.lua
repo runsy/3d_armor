@@ -331,6 +331,7 @@ minetest.register_on_joinplayer(function(player)
 	local player_name = player:get_player_name()
 
 	minetest.after(0, function()
+		-- TODO: Added in 7566ecc - What's the prupose?
 		local pplayer = minetest.get_player_by_name(player_name)
 		if pplayer and init_player_armor(pplayer) == false then
 			pending_players[pplayer] = 0

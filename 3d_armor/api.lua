@@ -638,17 +638,19 @@ end
 armor.get_valid_player = function(self, player, msg)
 	msg = msg or ""
 	if not player then
-		minetest.log("warning", S("3d_armor: Player reference is nil @1", msg))
+		minetest.log("warning", ("3d_armor%s: Player reference is nil"):format(msg))
 		return
 	end
 	local name = player:get_player_name()
 	if not name then
-		minetest.log("warning", S("3d_armor: Player name is nil @1", msg))
+		minetest.log("warning", ("3d_armor%s: Player name is nil"):format(msg))
 		return
 	end
 	local inv = minetest.get_inventory({type="detached", name=name.."_armor"})
 	if not inv then
-		minetest.log("warning", S("3d_armor: Detached armor inventory is nil @1", msg))
+		-- This check may fail when called inside `on_joinplayer`
+		-- in that case, the armor will be initialized/updated later on
+		minetest.log("warning", ("3d_armor%s: Detached armor inventory is nil"):format(msg))
 		return
 	end
 	return name, inv
