@@ -2,14 +2,14 @@
 local S = minetest.get_translator(minetest.get_current_modname())
 local F = minetest.formspec_escape
 local has_technic = minetest.get_modpath("technic") ~= nil
-local ui = unified_inventory
 
 if not minetest.global_exists("unified_inventory") then
-	minetest.log("warning", S("3d_armor_ui: Mod loaded but unused."))
+	minetest.log("warning", "3d_armor_ui: Mod loaded but unused.")
 	return
 end
 
-if unified_inventory.sfinv_compat_layer then
+local ui = unified_inventory
+if ui.sfinv_compat_layer then
 	return
 end
 
