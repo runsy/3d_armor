@@ -49,7 +49,7 @@ unified_inventory.register_page("armor", {
 			"listring[current_player;main]"..
 			"listring[detached:"..name.."_armor;armor]"
 		if armor.config.fire_protect then
-			formspec = formspec.."label[5.0,"..(fy + 1.0)..";"..
+			formspec = formspec.."label[6.0,"..(fy + 1.0)..";"..
 				F(S("Fire"))..":  "..armor.def[name].fire.."]"
 		end
 		if has_technic then
