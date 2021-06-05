@@ -4,7 +4,6 @@
 ### init.lua ###
 
 3d Armor=Armure 3d
-3d_armor_ui: Mod loaded but unused.=3d_armor_ui : Mod chargé mais inutilisé.
 Armor=Armure
 Armor not initialized!=Armure non initialisée !
 Fire=Feu
